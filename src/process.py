@@ -28,6 +28,7 @@ if transform:
         #print(c)
 
     for resolution in [ 100, 50, 20, 10, 5, 2, 1 ]:
+        print("Transform", resolution)
         gridtiler.grid_transformation(inpath+"grid_"+str(resolution)+"km.csv", tr, "./tmp/"+str(resolution*1000)+".csv")
 
 
