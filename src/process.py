@@ -5,37 +5,29 @@ import os
 
 inpath = "/home/juju/geodata/gisco/grids/"
 transform = True
-tiling = True
+tiling = False
 
 
 #transform
 if transform:
     def tr(c):
-        print(c)
-        return
-
-        # skip non populated non confidential cells
-        pop = c['T']
-        ci = c['T_CI']
-        if pop == "0" and ci != "-9999": return False
-        #if pop == "0" and ci == "-9999": print("ok!")
-
-        gid = c['GRD_ID'].replace("CRS3035RES1000mN", "").split('E')
-
+        p2006 = float(c["TOT_P_2006"])
+        p2011 = float(c["TOT_P_2011"])
+        p2018 = float(c["TOT_P_2018"])
+        p2021 = float(c["TOT_P_2021"])
+        if p2006==0 and p2011==0 and p2018==0 and p2021==0: return False
+        x = c["X_LLC"]
+        y = c["Y_LLC"]
         c.clear()
-        c['T'] = pop
-        c['x'] = gid[1]
-        c['y'] = gid[0]
+        c["x"]=x
+        c["y"]=y
+        c["p2006"]=p2006
+        c["p2011"]=p2011
+        c["p2018"]=p2018
+        c["p2021"]=p2021
+        #print(c)
 
-        #set confidentiality to 0 or 1
-        if ci == "": c['T_CI'] = 0
-        elif ci == "-9999": c['T_CI'] = 1
-        else: print("Unexpected T_CI: ", ci)
-
-        #initialise nb - to count the number of cells aggregated
-        c['nb'] = 1
-
-    for resolution in [10]:
+    for resolution in [ 100, 50, 20, 10, 5, 2, 1 ]:
         gridtiler.grid_transformation(inpath+"grid_"+str(resolution)+"km.csv", tr, "./tmp/"+str(resolution*1000)+".csv")
 
 
