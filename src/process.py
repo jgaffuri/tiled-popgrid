@@ -4,12 +4,34 @@ import os
 
 
 inpath = "/home/juju/geodata/gisco/grids/"
-transform = True
-tiling = False
+transform = False
+tiling = True
 
+# make tmp folder
+if not os.path.exists("./tmp/"): os.makedirs("./tmp/")
 
-#transform
+# transform
 if transform:
+
+    # one per year
+    def make_tr(year):
+        def tr(c):
+            p = float(c["TOT_P_"+str(year)])
+            if p==0: return False
+            x = c["X_LLC"]
+            y = c["Y_LLC"]
+            c.clear()
+            c["x"]=x
+            c["y"]=y
+            c["p"]=p
+        return tr
+
+    for resolution in [ 100, 50, 20, 10, 5, 2, 1 ]:
+        for year in [ 2021, 2018, 2011, 2006 ]:
+            print("Transform", year, resolution)
+            gridtiler.grid_transformation(inpath+"grid_"+str(resolution)+"km.csv", make_tr(year), "./tmp/"+str(year)+"_"+str(resolution*1000)+".csv")
+
+    # one with all years, to map change
     def tr(c):
         p2006 = float(c["TOT_P_2006"])
         p2011 = float(c["TOT_P_2011"])
@@ -32,23 +54,44 @@ if transform:
         gridtiler.grid_transformation(inpath+"grid_"+str(resolution)+"km.csv", tr, "./tmp/"+str(resolution*1000)+".csv")
 
 
-#tiling
+# tiling
 if tiling:
-    for resolution in [1000, 2000, 5000, 10000, 20000, 50000, 100000]:
-        print("tiling for resolution", resolution)
+
+    resolutions = [ 100000, 50000, 20000, 10000, 5000, 2000, 1000 ]
+    years = [ 2021, 2018, 2011, 2006 ]
+
+    for resolution in resolutions:
+        for year in years:
+            print("tiling", year, resolution)
+
+            #create output folder
+            out_folder = 'pub/v1/'+str(year)+'/' + str(resolution)
+            if not os.path.exists(out_folder): os.makedirs(out_folder)
+
+            gridtiler.grid_tiling(
+                "./tmp/"+str(year)+"_"+str(resolution)+".csv",
+                out_folder,
+                resolution,
+                tile_size_cell = 512,
+                x_origin = 0,
+                y_origin = 0,
+                format = "parquet"
+            )
+
+
+    for resolution in resolutions:
+        print("tiling", year, resolution)
 
         #create output folder
-        out_folder = 'pub/v2/parquet_total/' + str(resolution)
+        out_folder = 'pub/v1/change/' + str(resolution)
         if not os.path.exists(out_folder): os.makedirs(out_folder)
 
         gridtiler.grid_tiling(
-            aggregated_folder+str(resolution)+".csv",
+            "./tmp/"+str(resolution)+".csv",
             out_folder,
             resolution,
-            tile_size_cell = 512,
+            tile_size_cell = 256,
             x_origin = 0,
             y_origin = 0,
             format = "parquet"
         )
-
-
