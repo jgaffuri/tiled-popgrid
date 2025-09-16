@@ -2,27 +2,17 @@ from pygridmap import gridtiler
 from datetime import datetime
 import os
 
-# TODO
 
-"/home/juju/geodata/gisco/grids/grid_10km.csv"
-
-
-
-
-
-
-aggregated_folder = "/home/juju/Bureau/aggregated/"
-if not os.path.exists(aggregated_folder): os.makedirs(aggregated_folder)
-
+inpath = "/home/juju/geodata/gisco/grids/"
 transform = True
-aggregate = True
 tiling = True
 
 
 #transform
-
 if transform:
     def tr(c):
+        print(c)
+        return
 
         # skip non populated non confidential cells
         pop = c['T']
@@ -45,7 +35,8 @@ if transform:
         #initialise nb - to count the number of cells aggregated
         c['nb'] = 1
 
-    gridtiler.grid_transformation("/home/juju/geodata/census/2021/ESTAT_Census_2021_V2.csv", tr, aggregated_folder+"1000.csv")
+    for resolution in [10]:
+        gridtiler.grid_transformation(inpath+"grid_"+str(resolution)+"km.csv", tr, "./tmp/"+str(resolution*1000)+".csv")
 
 
 #tiling
