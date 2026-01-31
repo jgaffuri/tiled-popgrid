@@ -8,7 +8,7 @@ transform = False
 tiling = True
 
 # make tmp folder
-if not os.path.exists("./tmp/"): os.makedirs("./tmp/")
+os.makedirs("./tmp/", exist_ok=True)
 
 # transform
 if transform:
