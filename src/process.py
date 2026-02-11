@@ -17,15 +17,19 @@ if transform:
     # one per year
     def make_tr(year):
         def tr(c):
-            print(c["CNTR_ID"])
+            # no UK
+            if "UK" == c["CNTR_ID"]: return False
+
             p = float(c["TOT_P_"+str(year)])
             if p==0: return False
             x = c["X_LLC"]
             y = c["Y_LLC"]
+            cnt = c["CNTR_ID"]
             c.clear()
             c["x"]=x
             c["y"]=y
             c["p"]=p
+            c["CNTR_ID"] = cnt
         return tr
 
     for resolution in [ 100, 50, 20, 10, 5, 2, 1 ]:
@@ -35,7 +39,12 @@ if transform:
 
     # one with all years, to map change
     def tr(c):
-        #CNTR_ID
+        cntid = c["CNTR_ID"]
+        cnts = cntid.split("-")
+
+        # no UK
+        if "UK" == cntid: return False
+
         p2006 = float(c["TOT_P_2006"])
         p2011 = float(c["TOT_P_2011"])
         p2018 = float(c["TOT_P_2018"])
@@ -50,7 +59,14 @@ if transform:
         c["p2011"]=p2011
         c["p2018"]=p2018
         c["p2021"]=p2021
-        #print(c)
+
+        # remove pop, to make it impossible to compute change for those countries
+        for cs in ["IS","BA","RS","AL","MK","ME"]:
+            if cs in cnts:
+                c["p2011"]=None
+                c["p2021"]=None
+
+
 
     for resolution in [ 100, 50, 20, 10, 5, 2, 1 ]:
         print("Transform", resolution)
