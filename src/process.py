@@ -5,7 +5,7 @@ import os
 
 inpath = "/home/juju/geodata/gisco/grids/"
 transform = True
-tiling = False
+tiling = True
 #True False
 
 # make tmp folder
