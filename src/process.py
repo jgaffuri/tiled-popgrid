@@ -4,8 +4,9 @@ import os
 
 
 inpath = "/home/juju/geodata/gisco/grids/"
-transform = False
-tiling = True
+transform = True
+tiling = False
+#True False
 
 # make tmp folder
 os.makedirs("./tmp/", exist_ok=True)
@@ -16,6 +17,7 @@ if transform:
     # one per year
     def make_tr(year):
         def tr(c):
+            print(c["CNTR_ID"])
             p = float(c["TOT_P_"+str(year)])
             if p==0: return False
             x = c["X_LLC"]
@@ -33,6 +35,7 @@ if transform:
 
     # one with all years, to map change
     def tr(c):
+        #CNTR_ID
         p2006 = float(c["TOT_P_2006"])
         p2011 = float(c["TOT_P_2011"])
         p2018 = float(c["TOT_P_2018"])
