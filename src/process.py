@@ -28,7 +28,7 @@ if transform:
             c.clear()
             c["x"]=x
             c["y"]=y
-            c["p"]=p
+            c["T"]=p
             c["CNTR_ID"] = cnt
         return tr
 
@@ -40,7 +40,7 @@ if transform:
     # one with all years, to map change
     def tr(c):
         cntid = c["CNTR_ID"]
-        cnts = cntid.split("-")
+        #cnts = cntid.split("-")
 
         # no UK
         if "UK" == cntid: return False
@@ -55,16 +55,16 @@ if transform:
         c.clear()
         c["x"]=x
         c["y"]=y
-        c["p2006"]=p2006
-        c["p2011"]=p2011
-        c["p2018"]=p2018
-        c["p2021"]=p2021
+        c["T2006"]=p2006
+        c["T2011"]=p2011
+        c["T2018"]=p2018
+        c["T2021"]=p2021
 
-        # remove pop, to make it impossible to compute change for those countries
-        for cs in ["IS","BA","RS","AL","MK","ME"]:
-            if cs in cnts:
-                c["p2011"]=None
-                c["p2021"]=None
+        # remove pop for 2011 and 2021, to make it impossible to compute change for those countries
+        for cs in ["IS","BA","RS","AL","MK","ME", "BA-RS", "BA-ME-RS", "BA-ME", "ME-RS", "MK-RS", "AL-MK","AL-RS","AL-MK-RS", "AL-ME-RS", "AD", "MC", "SM"]:
+            if cs == cntid:
+                c["T2011"]=None
+                c["T2021"]=None
 
 
 
