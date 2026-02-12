@@ -62,9 +62,9 @@ if transform:
 
         # remove pop for 2011 and 2021, to make it impossible to compute change for those countries
         for cs in ["IS","BA","RS","AL","MK","ME", "BA-RS", "BA-ME-RS", "BA-ME", "ME-RS", "MK-RS", "AL-MK","AL-RS","AL-MK-RS", "AL-ME-RS", "AD", "MC", "SM"]:
-            if cs == cntid:
-                c["T2011"]=None
-                c["T2021"]=None
+            if cntid == cs:
+                c["T2011"] = None
+                c["T2021"] = None
 
 
 
